@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>The Cookiez</title>
+    <style>
+        body {
+            background: rgb(255, 208, 154);
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #ffac4d;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e09944;
+        }
+
+        .btn-secondary {
+            background-color: #ffac4d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e09944;
+        }
+
+        .modal {
+            display: none;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body class="px-8 py-16 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-orange-400 rounded-xl p-4 flex justify-between items-center">
+        <div class="text-white text-2xl font-bold">Adin's Shop</div>
+        <div>
+            <button class="btn-secondary px-4 py-2 rounded register-btn mr-2" onclick="window.location.href='pages/register.html'">Register</button>
+            <button class="btn-secondary px-4 py-2 rounded logout-btn hidden">Logout</button>
+            <button class="btn-secondary px-4 py-2 rounded login-btn" onclick="window.location.href='pages/login.html'">Login</button>
+        </div>
+    </nav>
+
+    <h1 class="my-6 font-semibold text-white text-center text-4xl"></h1>
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold text-center mb-6 text-orange-400">Cookies Shop</h1>
+
+        <div class="flex justify-between mb-4">
+            <button id="openModalBtn" class="btn-primary px-4 py-2 rounded mr-2">Tambah Produk</button>
+            <button id="openFilterModalBtn" class="btn-primary px-4 py-2 rounded">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+        </div>
+
+        <div id="filterModal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+                <h2 class="text-xl font-bold mb-4">Filter Produk</h2>
+                <form id="filterFormModal">
+                    <label for="nameFilter" class="block text-sm font-medium text-gray-700">Cari berdasarkan nama</label>
+                    <input type="text" id="nameFilter" name="nameFilter" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="priceMin" class="block text-sm font-medium text-gray-700">Harga Minimal</label>
+                    <input type="number" id="priceMin" name="priceMin" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="priceMax" class="block text-sm font-medium text-gray-700">Harga Maksimal</label>
+                    <input type="number" id="priceMax" name="priceMax" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="stockMin" class="block text-sm font-medium text-gray-700">Stok Minimal</label>
+                    <input type="number" id="stockMin" name="stockMin" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="stockMax" class="block text-sm font-medium text-gray-700">Stok Maksimal</label>
+                    <input type="number" id="stockMax" name="stockMax" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <div class="flex justify-end mt-4">
+                        <button type="submit" class="btn-primary px-4 py-2 rounded">Filter</button>
+                        <button type="button" id="closeFilterModalBtn" class="btn-secondary px-4 py-2 rounded ml-2">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-orange-400">
+                <tr>
+                    <th class="w-1/12 px-4 py-2 text-white">No</th>
+                    <th class="w-3/12 px-4 py-2 text-white">Nama Produk</th>
+                    <th class="w-2/12 px-4 py-2 text-white">Harga</th>
+                    <th class="w-2/12 px-4 py-2 text-white">Stok Barang</th>
+                    <th class="w-2/12 px-4 py-2 text-white">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                <!-- Rows will be added here by jQuery -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="productModal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-xl font-bold mb-4" id="modalTitle">Tambah Produk</h2>
+            <input type="hidden" id="productId">
+            <div class="mb-4">
+                <label for="productName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                <input type="text" id="productName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="mb-4">
+                <label for="productPrice" class="block text-sm font-medium text-gray-700">Harga</label>
+                <input type="number" id="productPrice" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="mb-4">
+                <label for="productStock" class="block text-sm font-medium text-gray-700">Stok</label>
+                <input type="number" id="productStock" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="flex justify-end">
+                <button id="saveProductBtn" class="btn-primary px-4 py-2 rounded mr-2">Simpan</button>
+                <button type="button" id="closeModalBtn" class="btn-secondary px-4 py-2 rounded">Batal</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

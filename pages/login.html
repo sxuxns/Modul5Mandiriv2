@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/login.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Login</title>
+    <style>
+        body {
+            background: rgb(255, 208, 154);
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #ffac4d;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #faaf5a;
+        }
+
+        .btn-secondary {
+            background-color: #ffac4d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #faaf5a;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="container mx-auto p-8 max-w-md">
+        <h1 class="text-3xl font-bold text-center mb-6">Login</h1>
+        <form id="loginForm" action="#" method="POST">
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <div class="flex w-full my-6">
+                <button type="submit" class="flex w-full justify-center btn-primary px-4 py-2 rounded">Login</button>
+            </div>
+        </form>
+        <p class="mt-4 text-center">Belum punya akun? <a href="register.html" class="text-orange-500 hover:text-orange-700">Register</a></p>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+    $('#loginForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const username = String($('#username').val());
+        const password = String($('#password').val());
+
+        if (username === "" || password === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'All fields are required',
+            });
+            return;
+        }
+
+        $.ajax({
+            url: 'https://localhost:7131/login',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ username, password }),
+            success: function(response) {
+                localStorage.setItem('token', response.token);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Login successful',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = '../index.html';
+                });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Login failed: ' + xhr.responseText,
+                });
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>
